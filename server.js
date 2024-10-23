@@ -6,10 +6,12 @@ const transactionModel = require('./models/Transaction')
 const devuser = require('./devusermodel')
 const middleware = require('./middleware')
 const jwt = require('jsonwebtoken')
+const bodyParser = require('body-parser')
 
 dotEnv.config()
 app = express()
 app.use(express.json())
+app.use(bodyParser.json());
 
 
 mongoose.connect(process.env.MONGO_URL)
@@ -40,7 +42,7 @@ app.post('/register',async(req,res)=>{
         jwt.sign(payload, 'jwtPassword', { expiresIn: '1hr' }, (err, token) => {
         if (err) throw err;
         console.log('Generated Token:', token);
-        res.status(200).json({ token }); 
+        res.status(200).json({ token,message : "User Registered Successfully" }); 
         });
     }
     catch(err){
@@ -68,7 +70,7 @@ app.post("/login",async (req,res)=>{
         jwt.sign(payload,"jwtPassword",{expiresIn:'1hr'},
             (err,token)=>{
               if(err) throw err
-              return res.json({token})
+              return res.json({token, message : "User logined Successfully"})
             }
         )
        
@@ -81,7 +83,7 @@ app.post("/login",async (req,res)=>{
 
 
 
-app.post('/transactions', async (req, res) => {
+app.post('/transactions', middleware,async (req, res) => {
     try {
       const { type, category, amount, date, description } = req.body;
       const transaction = new transactionModel({ type, category, amount, date, description });
@@ -92,7 +94,7 @@ app.post('/transactions', async (req, res) => {
     }
   });
 
-app.get('/transactions', async (req, res) => {
+app.get('/transactions', middleware, async (req, res) => {
 try {
     const transactions = await transactionModel.find();
     res.json(transactions);
@@ -101,7 +103,7 @@ try {
 }
 });
 
-app.get('/transactions/:id', async (req, res) => {
+app.get('/transactions/:id',middleware, async (req, res) => {
     try {
       const transaction = await transactionModel.findById(req.params.id);
       if (!transaction) return res.status(404).json({ error: 'Transaction not found' });
@@ -111,7 +113,7 @@ app.get('/transactions/:id', async (req, res) => {
     }
   });
 
-app.put('/transactions/:id', async (req, res) => {
+app.put('/transactions/:id',middleware, async (req, res) => {
 try {
     const updatedTransaction = await transactionModel.findByIdAndUpdate(
     req.params.id,
@@ -125,7 +127,7 @@ try {
 }
 });
 
-app.delete('/transactions/:id', async (req, res) => {
+app.delete('/transactions/:id',middleware, async (req, res) => {
     try {
       const deletedTransaction = await transactionModel.findByIdAndDelete(req.params.id);
       if (!deletedTransaction) return res.status(404).json({ error: 'Transaction not found' });
@@ -136,7 +138,7 @@ app.delete('/transactions/:id', async (req, res) => {
   });
   
 
-app.get('/summary', async (req, res) => {
+app.get('/summary', middleware, async (req, res) => {
     try {
       const { startDate, endDate, category } = req.query;
   
