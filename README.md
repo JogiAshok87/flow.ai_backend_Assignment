@@ -37,10 +37,11 @@ GET /transactions/:id: Retrieves a transaction by ID.
 PUT /transactions/:id: Updates a transaction by ID.
 ![WhatsApp Image 2024-10-23 at 08 12 39_ee4213b3](https://github.com/user-attachments/assets/eb7a4531-513b-4852-8b70-368e9ae7b6d9)
 
-DELETE /transactions/:id: Deletes a transaction by ID.
+GET /summary: Retrieves a summary of transactions, such as total income, total expenses, and balance. Optionally, this can be filtered by date range or category.
 ![WhatsApp Image 2024-10-23 at 08 17 10_87051057](https://github.com/user-attachments/assets/83df15be-5b1a-4240-b550-98d4889d62bb)
 
-GET /summary: Retrieves a summary of transactions, such as total income, total expenses, and balance. Optionally, this can be filtered by date range or category.
+
+DELETE /transactions/:id: Deletes a transaction by ID.
 ![WhatsApp Image 2024-10-23 at 08 18 30_1b2c5592](https://github.com/user-attachments/assets/5a7e3289-f975-4e15-88d8-38384431e1d2)
 
 
